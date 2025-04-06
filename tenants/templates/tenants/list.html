@@ -16,7 +16,7 @@
           <div class="card-body">
             <h5 class="card-title">{{ tenant.user.get_full_name }}</h5>
             <p><strong>رقم الهاتف:</strong> {{ tenant.phone_number }}</p>
-            <p><strong>العقار :</strong> {{ tenant.rented_property.name }}</p>
+            <p><strong>العقار :</strong> {{ tenant.rent_property.name }}</p>
             <a href="{% url 'tenant_detail' tenant.id %}" class="btn btn-outline-success btn-sm">تفاصيل</a>
           </div>
         </div>

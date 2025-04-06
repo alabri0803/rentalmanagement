@@ -13,8 +13,8 @@
   <p><strong>الهاتف :</strong> {{ tenant.phone_number }}</p>
   <p><strong>البريد الإلكتروني :</strong> {{ tenant.email }}</p>
   <p><strong>السجل التجاري :</strong> {{ tenant.commercial_license }}</p>
-  <p><strong>العقار :</strong> {{ tenant.rented_property.name }}</p>
-  <p><strong>مدة العقد :</strong> من {{ tenant.lease_start }} إلى {{ tenant.lease_end }}</p>
+  <p><strong>العقار :</strong> {{ tenant.rent_property.name }}</p>
+  <p><strong>مدة العقد :</strong> من {{ tenant.lease_start_date }} إلى {{ lease_end_date }}</p>
   <p><strong>الحالة :</strong> {% if tenant.is_active %} نشط {% else %} غير نشط {% endif %}</p>
   <a href="{% url 'tenant_list' %}" class="btn btn-secondary mt-3">رجوع</a>
 </body>
