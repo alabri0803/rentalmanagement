@@ -17,7 +17,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ property.name }}</h5>
                         <p class="card-text">{{ property.description|truncatechars:100 }}</p>
-                        <p><<strong>النوع:</strong> {{ property.get_property_type_display }}</p>
+                        <p><strong>النوع:</strong> {{ property.get_property_type_display }}</p>
                         <p><strong>السعر:</strong> {{ property.rent_price }} ريال عماني</p>
                         <a href="{% url 'property_detail' property.id %}" class="btn btn-outline-primary btn-sm">تفاصيل</a>
                     </div>
