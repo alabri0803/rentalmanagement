@@ -39,4 +39,4 @@ class PropertyAdmin(admin.ModelAdmin):
 class PropertyImageAdmin(admin.ModelAdmin):
     list_display = ('property', 'caption', 'image')
     search_fields = ('caption', 'property__name')
-    list_filter = ('property__city')
+    list_filter = ('property__city',)
