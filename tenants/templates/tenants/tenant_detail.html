@@ -1,0 +1,68 @@
+{% extends "properties/base.html" %}
+{% block title %}تفاصيل المستأجر{% endblock %}
+{% block content %}
+<div class="container mt-4 text-end" dir="rtl">
+<h2>
+  تفاصيل المستأجر: {{ tenant.full_name }}
+</h2>
+  <table class="table table-bordered mt-3">
+    <tbody>
+      <tr>
+        <th>الاسم الكامل</th>
+        <td>{{ tenant.full_name }}</td>
+      </tr>
+      
+      <tr>
+        <th>نوع المستأجر</th>
+        <td>{{ tenant.tenant_type }}</td>
+      </tr>
+      <tr>
+        <th>الوحدة</th>
+        <td>{{ tenant.unit.name }}</td>
+      </tr>
+      <tr>
+        <th>رقم الهوية</th>
+        <td>{{ tenant.id_number }}</td>
+      </tr>
+      <tr>
+        <th>الهاتف</th>
+        <td>{{ tenant.phone }}</td>
+      </tr>
+      <tr>
+        <th>البريد الإلكتروني</th>
+        <td>{{ tenant.email }}</td>
+      </tr>
+      <tr>
+        <th>بداية العقد</th>
+        <td>{{ tenant.contract_start }}</td>
+      </tr>
+      <tr>
+        <th>نهاية العقد</th>
+        <td>{{ tenant.contract_end }}</td>
+      </tr>
+      <tr>
+        <th>الحالة</th>
+        <td>{{ tenant.status }}</td>
+      </tr>
+      <tr>
+        <th>ملاحظات</th>
+        <td>{{ tenant.notes }}</td>
+      </tr>
+      <tr>
+        <th>الملفات</th>
+        <td>
+          {% if tenant.contract_file %}
+            <a href="{{ tenant.contract_file.url }}" target="_blank">ملف العقد</a>
+          {% endif %}
+          {% if tenant.id_document %}
+            <br><img src="{{ tenant.id_document.url }}" alt="وثيقة" width="120">
+          {% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <a href="{% url 'tenants:tenant_edit' tenant.id %}" class="btn btn-warning">تعديل</a>
+  <a href="{% url 'tenants:tenant_delete' tenant.id %}" class="btn btn-danger">حذف</a>
+  <a href="{% url 'tenants:tenant_list' %}" class="btn btn-secondary">عودة</a>
+</div>
+{% endblock %}

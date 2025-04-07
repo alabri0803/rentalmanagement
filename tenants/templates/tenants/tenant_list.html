@@ -1,28 +1,50 @@
-{% extends "base.html" %}
+{% extends "properties/base.html" %}
 {% block title %}المستأجرين{% endblock %}
 {% block content %}
-  <h1>قائمة المستأجرين</h1>
-  <a href="{% url 'tenants:tenant_add' %}" class="btn btn-success mb-3">إضافة مستأجر جديد</a>
-  <table class="table table-bordered text-end">
-    <thead>
+<div class="container mt-4 text-end" dir="rtl">
+  <h1 class="mb-4">قائمة المستأجرين</h1>
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+      <input type="text" name="q" placeholder="ابحث بالاسم أو الوحدة" class="form-control"  value="{{ request.GET.q }}">
+    </div>
+    <div class="col-md-3">
+      <select name="status" class="form-select">
+        <option value="">كل الحالات</option>
+        <option value="ساري" {% if request.GET.status == 'ساري' %}selected{% endif %}>ساري</option>
+        <option value="منتهي" {% if request.GET.status == 'منتهي' %}selected{% endif %}>منتهي</option>
+        <option value="ملغي" {% if request.GET.status == 'ملغي' %}selected{% endif %}>ملغي</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">بحث</button>
+    </div>
+    <div class="col-md-3 text-start">
+      <a href="{% url 'tenants:tenant_add' %}" class="btn btn-success">+ إضافة مستأجر</a>
+    </div>
+  </form>
+  <table class="table table-bordered table-striped text-center">
+    <thead class="table-light">
       <tr>
         <th>الاسم</th>
-        <th>نوع المستأجر</th>
         <th>الوحدة</th>
-        <th>العقد</th>
+        <th>الهاتف</th>
+        <th>بداية العقد</th>
+        <th>نهاية العقد</th>
         <th>الحالة</th>
-        <th>خيارات</th>
+        <th>إجراءات</th>
       </tr>
     </thead>
     <tbody>
       {% for tenant in tenants %}
         <tr>
           <td>{{ tenant.full_name }}</td>
-          <td>{{ tenant.tenant_type }}</td>
-          <td>{{ tenant.unit }}</td>
-          <td>{{ tenant.contract_start }} - {{ tenant.contract_end }} }}</td>
+          <td>{{ tenant.unit.name }}</td>
+          <td>{{ tenant.phone }}</td>
+          <td>{{ tenant.contract_start }}</td>
+          <td>{{ tenant.contract_end }}</td>
           <td>{{ tenant.status }}</td>
           <td>
+            <a href="{% url 'tenants:tenant_detail' tenant.id %}" class="btn btn-info btn-sm">عرض</a>
             <a href="{% url 'tenants:tenant_edit' tenant.id %}" class="btn btn-warning btn-sm">تعديل</a>
             <a href="{% url 'tenants:tenant_delete' tenant.id %}" class="btn btn-danger btn-sm">حذف</a>
           </td>
@@ -34,4 +56,24 @@
       {% endfor %}
     </tbody>
   </table>
+  {% if is_paginated %}
+    <nav class="text-center">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">السابق</a>
+          </li>
+        {% endif %}
+          <li class="page-item active">
+            <a class="page-link" href="#">{{ page_obj.number }}</a>
+          </li>
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">التالي</a>
+            </li>
+          {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
 {% endblock %}

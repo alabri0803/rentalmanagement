@@ -1,0 +1,13 @@
+{% extends "properties/base.html" %}
+{% block title %}تأكيد الحذف{% endblock %}
+{% block content %}
+<div class="container mt-4 text-end" dir="rtl">
+  <h3>هل أنت متأكد أنك تريد حذف المستأجر:</h3>
+  <p class="fw-bold">{{ tenant.full_name }}؟</p>
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">حذف</button>
+    <a href="{% url 'tenants:tenant_list' %}" class="btn btn-secondary">إلغاء</a>
+  </form>
+  </div>
+  {% endblock %}

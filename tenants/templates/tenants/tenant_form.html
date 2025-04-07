@@ -1,0 +1,26 @@
+{% extends "properties/base.html" %}
+{% load static %}
+{% block title %}{{ form.instance.pk|yesno:"تعديل مستأجر,إضافة مستأجر" }}{% endblock %}
+{% block content %}
+<div class="container mt-4 text-end" dir="rtl">
+  <h2 class="mb-4">{{ form.instance.pk|yesno:"تعديل مستأجر,إضافة مستأجر" }}</h2>
+  <form method="post" enctype="multipart/form-data" class="mt-3">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <small class="form-text text-muted">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">حفظ</button>
+    <a href="{% url 'tenants:tenant_list' %}" class="btn btn-secondary">إلغاء</a>
+  </form>
+</div>
+{% endblock %}
