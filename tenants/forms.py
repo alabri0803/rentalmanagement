@@ -1,8 +1,12 @@
 from django import forms
+from django.forms.widgets import DateInput
 
 from .models import Tenant
 
 
+class HijriDateInput(DateInput):
+  input_type = 'date'
+  
 class TenantForm(forms.ModelForm):
   class Meta:
     model = Tenant
@@ -19,3 +23,7 @@ class TenantForm(forms.ModelForm):
       'status': forms.Select(attrs={'class': 'form-select'}),
       'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
     }
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    self.fields['id_document'].widget.attrs.update({'class': 'form-control', 'accept': 'image/*'})
+    self.fields['contract_file'].widget.attrs.update({'class': 'form-control', 'accept': '.pdf'})
