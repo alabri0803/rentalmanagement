@@ -7,21 +7,23 @@
   <style>
     body {
       font-family: 'Cairo', sans-serif;
-      background-color: #f4f4f4
+      background-color: #f7f7f7;
     }
     .navbar {
-      background-color: #006c35;
+      background-color: #005c5c;
     }
-    .navbar-brand, .nav-link, h2, h3, h4 {
-      color: #ffffff !important;
+    .navbar a, .vavbar-brand {
+      color: white !important;
     }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg px-4">
-    <a class="navbar-brand" href="/">النظام العقاري العُماني</a>
+  <nav class="navbar navbar-expand-lg mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'properties:property_list' %}">نظام إدارة العقارات</a>
+    </div>
   </nav>
-  <div class="container py-4">
+  <div class="container">
     {% block content %}
     {% endblock %}
   </div>

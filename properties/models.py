@@ -61,3 +61,25 @@ class PropertyImage(models.Model):
 
   def __str__(self):
     return f"صورة - {self.property.name}"
+
+class Unit(models.Model):
+  UNIT_TYPES = [
+    ('شقة', 'شقة'),
+    ('محل', 'محل'),
+    ('مكتب', 'مكتب'),
+    ('مخزن', 'مخزن'),
+    ('موقف', 'موقف')
+  ]
+  property = models.ForeignKey(Property, related_name='units', on_delete=models.CASCADE, verbose_name='العقار')
+  name = models.CharField(max_length=100, verbose_name='اسم الوحدة')
+  type = models.CharField(max_length=50, choices=UNIT_TYPES, verbose_name='نوع الوحدة')
+  floor_number = models.PositiveIntegerField(verbose_name='رقم الطابق')
+  area = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='المساحة')
+  is_occupied = models.BooleanField(default=False, verbose_name='مشغولة؟')
+
+  class Meta:
+    verbose_name = 'وحدة'
+    verbose_name_plural = 'الوحدات'
+
+  def __str__(self):
+    return f"{self.name} - {self.get_type_display()}"

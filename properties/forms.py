@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Property, PropertyImage
+from .models import Property, PropertyImage, Unit
 
 
 class PropertyForm(forms.ModelForm):
@@ -47,7 +47,7 @@ class PropertyForm(forms.ModelForm):
       'is_active': 'نشط؟'
     }
 
-class PropertyImageForm(forms.ModelForm):
+class PropertyImageUploadForm(forms.ModelForm):
   class Meta:
     model = PropertyImage
     fields = ['image', 'caption']
@@ -58,4 +58,23 @@ class PropertyImageForm(forms.ModelForm):
     labels = {
       'image': 'الصورة',
       'caption': 'التعليق',
+    }
+
+class UnitForm(forms.ModelForm):
+  class Meta:
+    model = Unit
+    fields = ['name', 'type', 'floor_number', 'area', 'is_occupied']
+    widgets = {
+      'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'اسم الوحدة'}),
+      'type': forms.Select(attrs={'class': 'form-select'}),
+      'floor_number': forms.NumberInput(attrs={'class': 'form-control'}),
+      'area': forms.NumberInput(attrs={'class': 'form-control'}),
+      'is_occupied': forms.CheckboxInput(attrs={'class':'form-check-input'}),
+    }
+    labels = {
+      'name': 'اسم الوحدة',
+      'type': 'نوع الوحدة',
+      'floor_number': 'رقم الطابق',
+      'area': 'المساحة',
+      'is_occupied': 'مشغولة؟'
     }

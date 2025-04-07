@@ -1,0 +1,11 @@
+{% extends "properties/base.html" %}
+{% block title %}رفع صورة{% endblock %}
+{% block content %}
+<h2>رفع صورة جديدة للعقار: {{ property.name }}</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">رفع</button>
+    <a href="{% url 'properties:property_detail' property.pk %}" class="btn btn-secondary">رجوع</a>
+</form>
+{% endblock %}

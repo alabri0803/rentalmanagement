@@ -1,0 +1,35 @@
+{% extends "properties/base.html" %}
+{% block title %}قائمة العقارات{% endblock %}
+{% block content %}
+<h2 class="mb-4">قائمة العقارات</h2>
+<table class="table table-bordered table-striped text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>الاسم</th>
+            <th>النوع</th>
+            <th>المدينة</th>
+            <th>الحالة</th>
+            <th>خيارات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for property in properties %}
+        <tr>
+            <td>{{ property.name }}</td>
+            <td>{{ property.get_type_display }}</td>
+            <td>{{ property.city }}</td>
+            <td>{{ property.status }}</td>
+            <td>
+                <a href="{% url 'property_detail' property.pk %}" class="btn btn-info btn-sm">عرض</a>
+                <a href="{% url 'property_edit' property.pk %}" class="btn btn-warning btn-sm">تعديل</a>
+                <a href="{% url 'property_delete' property.pk %}" class="btn btn-danger btn-sm">حذف</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">لا توجد عقارات</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

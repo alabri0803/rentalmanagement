@@ -1,0 +1,11 @@
+{% extends "properties/base.html" %}
+{% block title %}{{ view.object.pk|yesno:"تعديل وحدة,إضافة وحدة" }}{% endblock %}
+{% block content %}
+  <h2 class="mb-4 text-center">{{ view.object.pk|yesno:"تعديل وحدة,إضافة وحدة" }}</h2>
+  <form method="post" enctype="multipart/form-data" class="mt-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">حفظ</button>
+    <a href="{% url 'properties:property_detail' view.object.property.id if view.object else property_id %}" class="btn btn-secondary">رجوع</a>
+  </form>
+  {% endblock %}

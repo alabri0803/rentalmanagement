@@ -1,0 +1,11 @@
+{% extends "properties/base.html" %}
+{% block title %}حذف عقار{% endblock %}
+{% block content %}
+<h2 class="text-danger">تأكيد حذف العقار</h2>
+<p>هل أنت متأكد أنك تريد حذف العقار: <strong>{{ object.name }}</strong>؟</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">نعم، احذف</button>
+    <a href="{% url 'properties:property_list' %}" class="btn btn-secondary">إلغاء</a>
+</form>
+{% endblock %}
