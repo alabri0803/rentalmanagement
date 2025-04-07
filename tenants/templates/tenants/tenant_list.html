@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}المستأجرين{% endblock %}
+{% block content %}
+  <h1>قائمة المستأجرين</h1>
+  <a href="{% url 'tenants:tenant_add' %}" class="btn btn-success mb-3">إضافة مستأجر جديد</a>
+  <table class="table table-bordered text-end">
+    <thead>
+      <tr>
+        <th>الاسم</th>
+        <th>نوع المستأجر</th>
+        <th>الوحدة</th>
+        <th>العقد</th>
+        <th>الحالة</th>
+        <th>خيارات</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tenant in tenants %}
+        <tr>
+          <td>{{ tenant.full_name }}</td>
+          <td>{{ tenant.tenant_type }}</td>
+          <td>{{ tenant.unit }}</td>
+          <td>{{ tenant.contract_start }} - {{ tenant.contract_end }} }}</td>
+          <td>{{ tenant.status }}</td>
+          <td>
+            <a href="{% url 'tenants:tenant_edit' tenant.id %}" class="btn btn-warning btn-sm">تعديل</a>
+            <a href="{% url 'tenants:tenant_delete' tenant.id %}" class="btn btn-danger btn-sm">حذف</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="6">لا يوجد مستأجرين حالياً</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

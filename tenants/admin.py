@@ -5,6 +5,6 @@ from .models import Tenant
 
 @admin.register(Tenant)
 class TenantAdmin(admin.ModelAdmin):
-  list_display = ('user', 'rent_property', 'lease_start_date', 'lease_end_date', 'is_active')
-  list_filter = ('is_active',)
-  search_fields = ('user__username', 'national_id', 'commercial_license')
+  list_display = ('full_name', 'tenant_type', 'unit', 'contract_start', 'contract_end')
+  search_fields = ('full_name', 'id_number')
+  list_filter = ('tenant_type', 'status')

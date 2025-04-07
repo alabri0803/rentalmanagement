@@ -1,12 +1,39 @@
-from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
+from django.views.generic import (
+  CreateView,
+  DeleteView,
+  DetailView,
+  ListView,
+  UpdateView,
+)
 
+from .forms import TenantForm
 from .models import Tenant
 
 
-def tenant_list(request):
-  tenants = Tenant.objects.filter(is_active=True)
-  return render(request, 'tenants/list.html', {'tenants': tenants})
+class TenantListView(ListView):
+  model = Tenant
+  template_name = 'tenants/tenant_list.html'
+  context_object_name = 'tenants'
 
-def tenant_detail(request, pk):
-  tenant = get_object_or_404(Tenant, pk=pk)
-  return render(request, 'tenants/detail.html', {'tenant': tenant})
+
+class TenantDetailView(DetailView):
+  model = Tenant
+  template_name = 'tenants/tenant_detail.html'
+
+class TenantCreateView(CreateView):
+  model = Tenant
+  form_class = TenantForm
+  template_name = 'tenants/tenant_form.html'
+  success_url = reverse_lazy('tenants:tenant_list')
+
+class TenantUpdateView(UpdateView):
+  model = Tenant
+  form_class = TenantForm
+  template_name = 'tenants/tenant_form.html'
+  success_url = reverse_lazy('tenants:tenant_list')
+
+class TenantDeleteView(DeleteView):
+  model = Tenant
+  template_name = 'tenants/tenant_confirm_delete.html'
+  success_url = reverse_lazy('tenants:tenant_list')
