@@ -5,6 +5,6 @@ from .models import Property
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'property_type', 'rent_price', 'is_available')
-    list_filter = ('property_type', 'is_available')
-    search_fields = ('name',)
+    list_display = ('name', 'type', 'city', 'num_apartments', 'num_shops')
+    search_fields = ('name', 'city')
+    list_filter = ('city', 'type')
