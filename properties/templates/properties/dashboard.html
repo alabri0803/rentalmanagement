@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}لوحة العقارات{% endblock %}
+{% block content %}
+<h2 class="text-center">لوحة التحكم</h2>
+<div class="row text-center mt-4">
+  <div class="col">
+    <div class="p-4 bg-success text-white rounded">
+      <h4>إجمالي العقارات</h4>
+      <p style="font-size: 24px;">{{ total }}</p>
+    </div>
+  </div>
+  <div class="col">
+    <div class="p-4 bg-info text-white rounded">
+      <h4>العقارات المشغولة</h4>
+      <p style="font-size: 24px;">{{ occupied }}</p>
+    </div>
+  </div>
+  <div class="col">
+    <div class="p-4 bg-warning text-white rounded">
+      <h4>العقارات الشاغرة</h4>
+      <p style="font-size: 24px;">{{ vacant }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

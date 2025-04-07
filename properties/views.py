@@ -22,3 +22,9 @@ def property_create(request):
   else:
     form = PropertyForm()
   return render(request, 'properties/form.html', {'form': form})
+
+def property_dashboard(request):
+  total = Property.objects.count()
+  occupied = Property.objects.filter(status='مشغول').count()
+  vacant = Property.objects.filter(status='شاغر').count()
+  return render(request, 'properties/dashboard.html', {'total': total, 'occupied': occupied, 'vacant': vacant})
