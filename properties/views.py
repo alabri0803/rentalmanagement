@@ -1,17 +1,14 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import (
-  CreateView,
-  DeleteView,
   DetailView,
   ListView,
-  UpdateView,
 )
 
-from .forms import PropertyForm, PropertyImageUploadForm, UnitForm
-from .models import Property, Unit
+from .forms import PropertyForm, UnitFeatureFormSet, UnitForm, UnitImageFormSet
+from .models import Property
 
 
 class PropertyListView(ListView):
@@ -21,73 +18,60 @@ class PropertyListView(ListView):
   paginate_by = 10
 
   def get_queryset(self):
-    return Property.objects.filter(is_active=True)
+    return Property.objects.all().order_by('-created_at')
 
+class PropertyCreateView(View):
+  def get(self, request):
+    form = PropertyForm()
+    return render(request, 'properties/property_form.html', {'form': form, 'title': _('إضافة عقار جديد'),})
+
+  def post(self, request):
+    form = PropertyForm(request.POST, request.FILES)
+    if form.is_valid():
+      prop = form.save(commit=False)
+      prop.owner = request.user
+      prop.save()
+      messages.success(request, _('تم إنشاء العقار بنجاح.'))
+      return redirect('properties:property_detail', pk=prop.pk)
+    return render(request, 'properties/property_form.html', {'form': form, 'title': _('إضافة عقار جديد'),})
+    
 class PropertyDetailView(DetailView):
   model = Property
   template_name = 'properties/property_detail.html'
   context_object_name = 'property'
 
-class PropertyCreateView(CreateView):
-  model = Property
-  form_class = PropertyForm
-  template_name = 'properties/property_form.html'
-  success_url = reverse_lazy('properties:property_list')
+class UnitCreateView(View):
+  def get(self, request, property_id):
+    property_obj = get_object_or_404(Property, id=property_id)
+    unit_form = UnitForm(initial={'property': property_obj})
+    image_formset = UnitImageFormSet()
+    feature_formset = UnitFeatureFormSet()
+    return render(request, 'properties/unit_form.html',{
+      'unit_form': unit_form,
+      'image_formset': image_formset,
+      'feature_formset': feature_formset,
+      'title': _('إضافة وحدة للعقار: ') + property_obj.name,
+    })
 
-class PropertyUpdateView(UpdateView):
-  model = Property
-  form_class = PropertyForm
-  template_name = 'properties/property_form.html'
-  success_url = reverse_lazy('properties:property_list')
-
-class PropertyDeleteView(DeleteView):
-  model = Property
-  template_name = 'properties/property_confirm_delete.html'
-  success_url = reverse_lazy('properties:property_list')
-
-class PropertyImageUploadView(View):
-  template_name = 'properties/property_image_upload.html'
-
-  def get(self, request, pk):
-    property_obj = get_object_or_404(Property, pk=pk)
-    form = PropertyImageUploadForm()
-    return render(request, self.template_name, {'form': form, 'property': property_obj})
-
-  def post(self, request, pk):
-    property_obj = get_object_or_404(Property, pk=pk)
-    form = PropertyImageUploadForm(request.POST, request.FILES)
-    if form.is_valid():
-      image = form.save(commit=False)
-      image.property = property_obj
-      image.save()
-      messages.success(request, 'تم رفع الصورة بنجاح.')
-      return redirect('properties:property_detail', pk=pk)
-    return render(request, self.template_name, {'form': form, 'property': property_obj})
-
-class UnitCreateView(CreateView):
-  model = Unit
-  form_class = UnitForm
-  template_name = 'properties/unit_form.html'
-
-  def form_valid(self, form):
-    property_id = self.kwargs.get('property_id')
-    form.instance.property_id = property_id
-    return super().form_valid(form)
-
-  def get_success_url(self):
-    return reverse_lazy('properties:property_detail', kwargs={'pk': self.object.property.id})
-
-class UnitUpdateView(UpdateView):
-  model = Unit
-  form_class = UnitForm
-  template_name = 'properties/unit_form.html'
-
-  def get_success_url(self):
-    return reverse_lazy('properties:property_detail', kwargs={'pk': self.object.property.id})
-
-class UnitDeleteView(DeleteView):
-  model = Unit
-  template_name = 'properties/unit_confirm_delete.html'
-
-  def get_success_url(self):
-    return reverse_lazy('properties:property_detail', kwargs={'pk': self.object.property.id})
+  def post(self, request, property_id):
+    property_obj = get_object_or_404(Property, id=property_id)
+    unit_form = UnitForm(request.POST)
+    image_formset = UnitImageFormSet(request.POST, request.FILES)
+    feature_formset = UnitFeatureFormSet(request.POST)
+    if unit_form.is_valid() and image_formset.is_valid() and feature_formset.is_valid():
+      unit = unit_form.save(commit=False)
+      unit.property = property_obj
+      unit.save()
+      image_formset.instance = unit
+      image_formset.save()
+      feature_formset.instance = unit
+      feature_formset.save()
+      messages.success(request, _('تم إنشاء الوحدة بنجاح.'))
+      return redirect('properties:property_detail', pk=property_obj.pk)
+    return render(request, 'properties/unit_form.html', {
+      'form': unit_form,
+      'image_formset': image_formset,
+      'feature_formset': feature_formset,
+      'property': property_obj,
+      'title': _('إضافة وحدة: '),
+    })

@@ -1,42 +1,82 @@
 from django.contrib import admin
+from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 
-from .models import Property, PropertyImage
+from .models import Property, PropertyCategory, Unit, UnitFeature, UnitImage
 
 
-class PropertyImageInline(admin.TabularInline):
-    model = PropertyImage
+class UnitImageInline(admin.TabularInline):
+    model = UnitImage
     extra = 1
-    verbose_name = 'صورة'
-    verbose_name_plural = 'صور العقار'
-    fields = ['image', 'caption']
-    readonly_fields = []
-    
+    fields = ['image', 'preview', 'caption']
+    readonly_fields = ['preview',]
+
+    def preview(self, obj):
+      if obj.image:
+        return format_html('<img src="{}" width= "100" style="border:1px solid #ccc;" />', obj.image.url)
+      return "-"
+    preview.short_description = "معاينة"
+
+class UnitFeatureInline(admin.TabularInline):
+    model = UnitFeature
+    extra = 1
+
+class UnitInline(admin.TabularInline):
+    model = Unit
+    extra = 1
+    show_change_link = True
+
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'type', 'category', 'city', 'status', 'is_active')
-    list_filter = ('type', 'status', 'category', 'city', 'has_parking', 'has_elevator')
-    search_fields = ('name', 'city', 'address')
-    ordering = ('-created_at',)
-    inlines = [PropertyImageInline]
+    list_display = ('name', 'city', 'governorate', 'category', 'total_units', 'created_at', 'owner')
+    list_filter = ('city', 'governorate', 'category')
+    search_fields = ('name', 'address', 'city', 'governorate')
+    inlines = [UnitInline]
     fieldsets = (
-        ('المعلومات الأساسية', {
-            'fields': ('name', 'type', 'category', 'description', 'is_active')
+        (_('معلومات العقار'), {
+            'fields': ('name', 'description', 'image')
         }),
-        ('الموقع', {
-            'fields': ('city', 'address', 'latitude', 'longitude')
+        (_('الموقع'), {
+            'fields': ('address', 'city', 'governorate')
         }),
-        ('مواصفات العقار', {
-            'fields': ('status', 'floor_count', 'unit_count', 'has_parking', 'has_elevator')
+        (_('تنصيف وإدارة العقار'), {
+            'fields': ('category', 'total_units', 'owner')
+        })
+    )
+
+@admin.register(Unit)
+class UnitAdmin(admin.ModelAdmin):
+    list_display = ('name', 'property', 'unit_type', 'status', 'price_monthly', 'floor', 'area_sqm')
+    list_filter = ('status', 'unit_type', 'property__city')
+    search_fields = ('name', 'property__name')
+    inlines = [UnitImageInline, UnitFeatureInline]
+    list_editable = ('status', 'price_monthly')
+    fieldsets = (
+        (_('تفاصيل الوحدة'), {
+            'fields': ('property', 'name', 'unit_type', 'floor', 'area_sqm')
         }),
-        ('تواريخ', {
-            'fields': ('created_at', 'updated_at'),
+        (_('الإيجار والحالة'), {
+            'fields': ('price_monthly', 'status', 'notes')
         }),
     )
-    readonly_fields = ('created_at', 'updated_at')
-    list_per_page = 25
 
-@admin.register(PropertyImage)
-class PropertyImageAdmin(admin.ModelAdmin):
-    list_display = ('property', 'caption', 'image')
-    search_fields = ('caption', 'property__name')
-    list_filter = ('property__city',)
+@admin.register(PropertyCategory)
+class PropertyCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+
+@admin.register(UnitImage)
+class UnitImageAdmin(admin.ModelAdmin):
+    list_display = ('unit', 'caption', 'thumbnail')
+    readonly_fields = ('thumbnail',)
+
+    def thumbnail(self, obj):
+      if obj.image:
+        return format_html('<img src="{}" width="80" style="border:1px solid #ddd;" />', obj.image.url)
+      return "-"
+    thumbnail.short_description = "صورة"
+
+@admin.register(UnitFeature)
+class UnitFeatureAdmin(admin.ModelAdmin):
+    list_display = ('unit', 'feature_name')
+    search_fields = ('feature_name',)
