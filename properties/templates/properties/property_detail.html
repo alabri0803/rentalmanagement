@@ -1,73 +1,24 @@
 {% extends "properties/base.html" %}
 {% block title %}تفاصيل العقار{% endblock %}
 {% block content %}
-<h2 class="mb-4">تفاصيل العقار: {{ property.name }}</h2>
-<table class="table table-bordered">
-    <tr>
-      <th>النوع</th>
-      <td>{{ property.get_type_display }}</td>
-      <th>الفئة</th>
-      <td>{{ property.get_category_display }}</td>
-      <th>المدينة</th>
-      <td>{{ property.city }}</td>
-      <th>العنوان</th>
-      <td>{{ property.address }}</td>
-      <th>الحالة</th>
-      <td>{{ property.status }}</td>
-      <th>عدد الطوابق</th>
-      <td>{{ property.floor_count }}</td>
-      <th>عدد الوحدات</th>
-      <td>{{ property.unit_count }}</td>
-      <th>الوصف</th>
-      <td>{{ property.description }}</td>
-    </tr>
-</table>
-<h4>الصور:</h4>
-<div class="row">
-  {% for image in property.images.all %}
-  <div class="col-md-3 mb-3">
-    <img src="{{ image.image.url }}" alt="صورة العقار" class="img-thumbnail">
-    <p class="text-center">{{ image.caption }}</p>
-  </div>
-  {% empty %}
-  <div class="col">
-    <p>لا توجد صور مضافة</p>
-  </div>
-  {% endfor %}
-</div>
-<a href="{% url 'properties:property_list' %}" class="btn btn-secondary">رجوع</a>
-<a href="{% url 'properties:property_upload_image' property.pk %}" class="btn btn-outline-success btn-sm">رفع صورة جديدة</a>
-<h2 class="mt-4">الوحدات</h2>
-<a class="btn btn-primary mb-2" href="{% url 'properties:unit_add' property.pk %}">إضافة وحدة</a>
-<table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>الاسم</th>
-        <th>النوع</th>
-        <th>الطابق</th>
-        <th>المساحة</th>
-        <th>مشغولة؟</th>
-        <th>خيارات</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for unit in property.units.all %}
-      <tr>
-        <td>{{ unit.name }}</td>
-        <td>{{ unit.get_type_display }}</td>
-        <td>{{ unit.floor_number }}</td>
-        <td>{{ unit.area }} م2</td>
-        <td>{{ unit.is_occupied|yesno:"نعم,لا" }}</td>
-        <td>
-          <a href="{% url 'properties:unit_edit' unit.pk %}" class="btn btn-warning btn-sm">تعديل</a>
-          <a href="{% url 'properties:unit_delete' unit.pk %}" class="btn btn-danger btn-sm">حذف</a>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="6">لا توجد وحدات مضافة</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-</table>
+    <div class="card mb-4 shadow-sm">
+        {% if property.image %}
+            <img src="{{ property.image.url }}" class="card-img-top" style="height:250px; object-fit:cover;">
+        {% endif %}
+        <div class="card-body">
+            <h3>{{ property.name }}</h3>
+            <p><strong>الموقع:</strong> {{ property.city }} - {{ property.governorate }}</p>
+            <p><strong>الوصف:</strong> {{ property.description }}</p>
+            <a href="{% url 'properties:unit_add' property.pk %}" class="btn btn-outline-success mt-3">إضافة وحدة</a>
+        </div>
+    </div>
+
+    <h5>الوحدات المرتبطة:</h5>
+    <ul>
+        {% for unit in property.unit_set.all %}
+            <li>{{ unit.name }} - {{ unit.get_status_display }} - {{ unit.price_monthly }} ريال</li>
+        {% empty %}
+            <li>لا توجد وحدات مرتبطة.</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

@@ -1,35 +1,26 @@
 {% extends "properties/base.html" %}
 {% block title %}قائمة العقارات{% endblock %}
 {% block content %}
-<h2 class="mb-4">قائمة العقارات</h2>
-<table class="table table-bordered table-striped text-center">
-    <thead class="table-dark">
-        <tr>
-            <th>الاسم</th>
-            <th>النوع</th>
-            <th>المدينة</th>
-            <th>الحالة</th>
-            <th>خيارات</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for property in properties %}
-        <tr>
-            <td>{{ property.name }}</td>
-            <td>{{ property.get_type_display }}</td>
-            <td>{{ property.city }}</td>
-            <td>{{ property.status }}</td>
-            <td>
-                <a href="{% url 'properties:property_detail' property.pk %}" class="btn btn-info btn-sm">عرض</a>
-                <a href="{% url 'properties:property_edit' property.pk %}" class="btn btn-warning btn-sm">تعديل</a>
-                <a href="{% url 'properties:property_delete' property.pk %}" class="btn btn-danger btn-sm">حذف</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">لا توجد عقارات</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h4>قائمة العقارات</h4>
+    <a href="{% url 'properties:property_add' %}" class="btn btn-success">إضافة عقار</a>
+</div>
+<div class="row">
+    {% for prop in properties %}
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            {% if prop.image %}
+            <img src="{{ prop.image.url }}" class="card-img-top" style="height:200px; object-fit:cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ prop.name }}</h5>
+                <p class="card-text">{{ prop.city }} - {{ prop.governorate }}</p>
+                <a href="{% url 'properties:property_detail' prop.pk %}" class="btn btn-outline-primary btn-sm">تفاصيل</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+        <p>لا توجد عقارات حالياً</p>
+    {% endfor %}
+</div>
 {% endblock %}

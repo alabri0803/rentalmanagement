@@ -2,28 +2,21 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>{% block title %}إدارة العقارات{% endblock %}</title>
+  <title>{% block title %}نظام إدارة العقارات{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
   <style>
     body {
       font-family: 'Cairo', sans-serif;
-      background-color: #f7f7f7;
+      background-color: #f9f9f9;
     }
-    .navbar {
-      background-color: #005c5c;
-    }
-    .navbar a, .vavbar-brand {
-      color: white !important;
+    .main-container {
+      margin-top: 50px;
     }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg mb-4">
-    <div class="container">
-      <a class="navbar-brand" href="{% url 'properties:property_list' %}">نظام إدارة العقارات</a>
-    </div>
-  </nav>
-  <div class="container">
+  <div class="container main-container">
+    <h2 class="mb-4 text-center">نظام إدارة العقارات</h2>
     {% block content %}
     {% endblock %}
   </div>

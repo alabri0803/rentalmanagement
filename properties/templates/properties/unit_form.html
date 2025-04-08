@@ -1,11 +1,27 @@
 {% extends "properties/base.html" %}
-{% block title %}{{ view.object.pk|yesno:"تعديل وحدة,إضافة وحدة" }}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 {% block content %}
-  <h2 class="mb-4 text-center">{{ view.object.pk|yesno:"تعديل وحدة,إضافة وحدة" }}</h2>
-  <form method="post" enctype="multipart/form-data" class="mt-4">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">حفظ</button>
-    <a href="{% url 'properties:property_detail' view.object.property.id if view.object else property_id %}" class="btn btn-secondary">رجوع</a>
-  </form>
-  {% endblock %}
+    <h4 class="mb-3">{{ title }}</h4>
+    <form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm">
+        {% csrf_token %}
+        <fieldset class="mb-4">
+            <legend>بيانات الوحدة</legend>
+            {{ form.as_p }}
+        </fieldset>
+        <fieldset class="mb-4">
+            <legend>الصور</legend>
+            {{ image_formset.management_form }}
+            {% for form in image_formset %}
+                {{ form.as_p }}
+            {% endfor %}
+        </fieldset>
+        <fieldset class="mb-4">
+            <legend>الميزات</legend>
+            {{ feature_formset.management_form }}
+            {% for form in feature_formset %}
+                {{ form.as_p }}
+            {% endfor %}
+        </fieldset>
+        <button type="submit" class="btn btn-primary">حفظ الوحدة</button>
+    </form>
+{% endblock %}
