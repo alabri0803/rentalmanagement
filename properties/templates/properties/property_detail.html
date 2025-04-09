@@ -1,24 +1,24 @@
-{% extends "properties/base.html" %}
-{% block title %}تفاصيل العقار{% endblock %}
-{% block content %}
-    <div class="card mb-4 shadow-sm">
-        {% if property.image %}
-            <img src="{{ property.image.url }}" class="card-img-top" style="height:250px; object-fit:cover;">
-        {% endif %}
-        <div class="card-body">
-            <h3>{{ property.name }}</h3>
-            <p><strong>الموقع:</strong> {{ property.city }} - {{ property.governorate }}</p>
-            <p><strong>الوصف:</strong> {{ property.description }}</p>
-            <a href="{% url 'properties:unit_add' property.pk %}" class="btn btn-outline-success mt-3">إضافة وحدة</a>
-        </div>
-    </div>
-
-    <h5>الوحدات المرتبطة:</h5>
-    <ul>
-        {% for unit in property.unit_set.all %}
-            <li>{{ unit.name }} - {{ unit.get_status_display }} - {{ unit.price_monthly }} ريال</li>
-        {% empty %}
-            <li>لا توجد وحدات مرتبطة.</li>
-        {% endfor %}
-    </ul>
-{% endblock %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ property.name }}</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    </head>
+    <body class="p-4">
+        <h2>{{ property.name }}</h2>
+        <p><strong>المدينة:</strong> {{ property.city }}</p>
+        <p><strong>العنوان:</strong> {{ property.address }}</p>
+        <p><strong>الوصف:</strong> {{ property.description }}</p>
+        <a href="{% url 'properties:add_unit' property.id %}" class="btn btn-primary my-3">إضافة وحدة</a>
+        <h5>الوحدات المرتبطة:</h5>
+        <ul>
+            {% for u in property.unit_set.all %}
+            <li>{{ u.name }} - {{ u.get_unit_type_display }} {{ u.get_status_display }}</li>
+            {% empty %}
+            <li>لا توجد وحدات حتى الآن</li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

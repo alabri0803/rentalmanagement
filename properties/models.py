@@ -1,88 +1,57 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-User = get_user_model()
-
-class PropertyCategory(models.Model):
-  name = models.CharField(_("اسم الفئة"), max_length=100)
-
-  def __str__(self):
-    return self.name
-
-  class Meta:
-    verbose_name = "فئة عقار"
-    verbose_name_plural = "فئات العقارات"
+from django.contrib.auth.models import User
 
 class Property(models.Model):
-  name = models.CharField(_("اسم العقار"), max_length=200)
-  description = models.TextField(_("الوصف"), blank=True, null=True)
-  address = models.TextField(_("العنوان"))
-  city = models.CharField(_("المدينة"), max_length=100)
-  governorate = models.CharField(_("المحافظة"), max_length=100)
-  category = models.ForeignKey(PropertyCategory, on_delete=models.SET_NULL, null=True, verbose_name=_("الفئة"))
-  total_units = models.PositiveIntegerField(_("إجمالي الوحدات"), default=0)
-  image = models.ImageField(_("صورة العقار"), upload_to='properties/images/', blank=True, null=True)
-  created_at = models.DateTimeField(auto_now_add=True)
+  name = models.CharField(max_length=255, verbose_name=_("اسم العقار"))
+  address = models.TextField(verbose_name=_("العنوان"))
+  city = models.CharField(max_length=100, verbose_name=_("المدينة"))
   owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("المالك"))
+  description = models.TextField(blank=True, null=True, verbose_name=_("الوصف"))
+  latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=_("خط العرض"))
+  longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=_("خط الطول"))
+  created_at = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
     return self.name
 
-  class Meta:
-    verbose_name = "عقار"
-    verbose_name_plural = "العقارات"
-
 class Unit(models.Model):
-  class UnitType(models.TextChoices):
-    APARTMENT = 'شقة', _('شقة')
-    OFFICE = 'مكتب', _('مكتب')
-    SHOP = 'محل', _('محل تجاري')
-    WAREHOUSE = 'مخزن', _('مخزن')
-    PARKING = 'موقف', _('موقف سيارات')
-    OTHER = 'أخرى', _('أخرى')
-
-  class UnitStatus(models.TextChoices):
-    AVAILABLE = 'متاحة', _('متاحة')
-    OCCUPIED = 'مؤجرة', _('مؤجرة')
-    MAINTENANCE = 'الصيانة', _('تحت الصيانة')
-    INACTIVE = 'غير نشطة', _('غير نشطة')
-
+  UNIT_TYPE_CHOICES = [
+    ('apartment', _('شقة')),
+    ('office', _('مكتب')),
+    ('shop', _('محل تجاري')),
+    ('warehouse', _('مخزن')),
+    ('parking', _('موقف سيارات'))
+  ]
+  STATUS_CHOICES = [
+    ('available', _('متاح')),
+    ('rented', _('مؤجرة')),
+    ('maintenance', _('صيانة'))
+  ]
   property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='units', verbose_name=_("العقار"))
-  name = models.CharField(_("اسم الوحدة"), max_length=100)
-  unit_type = models.CharField(_("نوع الوحدة"), max_length=20, choices=UnitType.choices)
-  floor = models.IntegerField(_("الطابق"), default=0)
-  area_sqm = models.DecimalField(_("المساحة (متر مربع)"), max_digits=8, decimal_places=2)
-  status = models.CharField(_("الحالة"), max_length=20, choices=UnitStatus.choices, default=UnitStatus.AVAILABLE)
-  price_monthly = models.DecimalField(_("الإيجار الشهري"), max_digits=10, decimal_places=2)
-  notes = models.TextField(_("ملاحظات"), blank=True, null=True)
-
+  name = models.CharField(max_length=100, verbose_name=_("اسم الوحدة"))
+  unit_type = models.CharField(max_length=20, choices=UNIT_TYPE_CHOICES, verbose_name=_("نوع الوحدة"))
+  floor = models.IntegerField(verbose_name=_("الطابق"))
+  area = models.DecimalField(max_digits=6, decimal_places=2, verbose_name=_("المساحة بالمتر"))
+  rooms = models.PositiveIntegerField(default=0, verbose_name=_("عدد الغرف"))
+  bathrooms = models.PositiveIntegerField(default=0, verbose_name=_("عدد الحمامات"))
+  furnished = models.BooleanField(default=False, verbose_name=_("مفروشة"))
+  price_monthly = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("الإيجار الشهري"))
+  status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available', verbose_name=_("الحالة"))
+  
   def __str__(self):
-    return f"{self.property.name} - {self.name}"
-
-  class Meta:
-    verbose_name = "وحدة"
-    verbose_name_plural = "الوحدات"
-
+    return f"{self.name} - {self.property.name}"
+    
 class UnitImage(models.Model):
-  unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='images')
-  image = models.ImageField(upload_to='units/images/')
-  caption = models.CharField(_("وصف الصورة"), max_length=255, blank=True)
+  unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='images', verbose_name=_("الوحدة"))
+  image = models.ImageField(upload_to='unit_images/', verbose_name=_("الصورة"))
+  
+  def __str__(self):
+    return f"صورة {self.unit.name}"
+
+class Feature(models.Model):
+  unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='features', verbose_name=_("الوحدة"))
+  feature = models.CharField(max_length=255, verbose_name=_("الميزة"))
 
   def __str__(self):
-    return f"صورة - {self.unit.name}"
-
-  class Meta:
-    verbose_name = "صورة وحدة"
-    verbose_name_plural = "صور الوحدات"
-
-class UnitFeature(models.Model):
-  unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='features')
-  feature_name = models.CharField(_("الميزة"), max_length=100)
-
-  def __str__(self):
-    return self.feature_name
-
-  class Meta:
-    verbose_name = "ميزة الوحدة"
-    verbose_name_plural = "مزايا الوحدات"
+    return f"{self.feature} - {self.unit.name}"

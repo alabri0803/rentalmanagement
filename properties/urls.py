@@ -5,8 +5,8 @@ from . import views
 app_name = 'properties'
 
 urlpatterns = [
-  path('', views.PropertyListView.as_view(), name='property_list'),
-  path('add/', views.PropertyCreateView.as_view(), name='property_add'),
-  path('<int:pk>/', views.PropertyDetailView.as_view(), name='property_detail'),
-  path('<int:property_id>/add-unit/', views.UnitCreateView.as_view(), name='unit_add'),
+    path('', views.property_list, name='property_list'),
+    path('add/', views.add_property, name='add_property'),
+    path('<int:pk>/', views.property_detail, name='property_detail'),
+    path('<int:property_id>/unit/add/', views.add_unit, name='add_unit')
 ]
