@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'rest_framework',
+    'users',
     'properties',
     'tenants',
     'payments',
@@ -85,6 +85,21 @@ DATABASES = {
     }
 }
 
+#DATABASES = {
+    #'default': {
+        #'ENGINE': 'django.db.backends.mysql',
+        #'NAME': 'sqlite3',
+        #'USER': 'root',
+        #'PASSWORD': '',
+        #'HOST': 'localhost',  # أو عنوان الخادم إذا كان على جهاز آخر
+        #'PORT': '3306',       # البورت الافتراضي لـ MySQL
+        #'OPTIONS': {
+            #'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            # لتجنب مشاكل التوقيت الزمني
+            #'init_command': "SET time_zone='+04:00'",  # اضبط حسب منطقتك الزمنية
+        #},
+    #}
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
