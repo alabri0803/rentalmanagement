@@ -7,24 +7,27 @@
   <style>
     body {
       font-family: 'Cairo', sans-serif;
-      background-color: #f8f9fa;
+      background-color: #f9f9f9;
     }
     nav {
       background-color: #003a63;
+      padding: 1rem;
       color: white;
     }
     nav a {
       color: white;
-      margin: 0 1rem;
+      margin-left: 1rem;
+      text-decoration: none
     }
   </style>
 </head>
 <body>
-  <nav class="p-3">
-    <div class="container d-flex justify-content-between">
-      <div><strong>نظام إدارة الإيجارات</strong></div>
+  <nav class="d-flex justify-content-between align-items-center">
+      <div><strong>لوحة المستخدم</strong></div>
       <div>
-        <a href="{% url 'users:logout' %}">تسجيل الخروج</a>
+        <a href="{% url 'users:profile' %}">الملف الشخصي</a>
+        <a href="{% url 'users:change_password' %}">كلمة المرور</a>
+        <a href="{% url 'users:logout' %}">الخروج</a>
       </div>
     </div>
   </nav>

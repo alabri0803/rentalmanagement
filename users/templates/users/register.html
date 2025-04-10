@@ -1,0 +1,12 @@
+{% extends "users/base_user.html" %}
+{% block title %}تسجيل مستخدم جديد{% endblock %}
+{% block content %}
+  <h3>تسجيل مستخدم جديد</h3>
+  <form method="post">
+    {% csrf_token %}
+    <div class="card p-4">
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">حفظ</button>
+    </div>
+    </form>
+    {% endblock %}
