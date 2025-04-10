@@ -4,8 +4,10 @@
   <h3>الملف الشخصي</h3>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">حفظ التعديلات</button>
+    <div class="card p-4">
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-success mt-2">حفظ التعديلات</button>
+    </div>
   </form>
 </div>
 {% endblock %}
