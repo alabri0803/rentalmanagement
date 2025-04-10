@@ -11,8 +11,8 @@ class UserRole(models.TextChoices):
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   role = models.CharField(max_length=20, choices=UserRole.choices, default=UserRole.STAFF)
-  phone = models.CharField(max_length=20, blank=True)
-  address = models.CharField(max_length=255, blank=True)
+  phone = models.CharField(max_length=20, blank=True, null=True, verbose_name=_("رقم الهاتف"))
+  address = models.TextField(blank=True, null=True, verbose_name=_("العنوان"))
 
   def __str__(self):
     return f"{self.user.username} ({self.get_role_display()})"

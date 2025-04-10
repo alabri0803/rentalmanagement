@@ -7,4 +7,4 @@ from .models import Profile
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'role', 'phone')
     search_fields = ('user__username', 'phone')
-    list_filter = ('role',)
+    list_filter = ('user__username', 'phone',)

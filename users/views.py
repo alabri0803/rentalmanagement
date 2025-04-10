@@ -3,20 +3,26 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
+from .forms import LoginForm
 from .models import UserRole
 
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('users:redirect_by_role')
-        else:
-            messages.error(request, 'اسم المستخدم أو كلمة المرور غير صحيحة.')
-    return render(request, 'users/login.html')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(
+                username=form.cleaned_data['username'], 
+                password=form.cleaned_data['password']
+            )
+            if user:
+                login(request, user)
+                return redirect('users:redirect_by_role')
+            else:
+                messages.error(request, 'اسم المستخدم أو كلمة المرور غير صحيحة.')
+    else:
+        form = LoginForm()
+    return render(request, 'users/login.html', {'form': form})
 
 @login_required
 def logout_view(request):
@@ -33,5 +39,4 @@ def redirect_by_role(request):
     elif role == UserRole.STAFF:
         return redirect('properties:staff_dashboard')
     else:
-        messages.error(request, 'لم يتم تحديد دور المستخدم بشكل صحيح.')
         return redirect('users:login')
