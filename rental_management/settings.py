@@ -11,11 +11,14 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
-
+import gettext
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+os.environ['LOCALE_DIR'] = os.path.join(os.path.dirname(__file__), 'locale')
+gettext.bindtextdomain('messages', os.environ['LOCALE_DIR'])
+gettext.textdomain('messages')
+_ = gettext.gettext
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -124,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'om-ar'
+LANGUAGE_CODE = 'ar'
 
 TIME_ZONE = 'Asia/Muscat'
 
